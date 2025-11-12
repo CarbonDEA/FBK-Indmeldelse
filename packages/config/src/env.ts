@@ -1,7 +1,9 @@
 import { z } from 'zod';
 import * as dotenv from 'dotenv';
+import * as path from 'path';
 
-dotenv.config();
+// Load .env from monorepo root
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
@@ -27,18 +29,18 @@ const envSchema = z.object({
   RESEND_API_KEY: z.string().optional(),
   
   // Unifi
-  UNIFI_BASE_URL: z.string().url().optional(),
+  UNIFI_BASE_URL: z.string().url().optional().or(z.literal('')),
   UNIFI_USERNAME: z.string().optional(),
   UNIFI_PASSWORD: z.string().optional(),
   UNIFI_SITE: z.string().default('default'),
   
   // Dinero
-  DINERO_API_BASE: z.string().url().optional(),
+  DINERO_API_BASE: z.string().url().optional().or(z.literal('')),
   DINERO_ORG_ID: z.string().optional(),
   DINERO_API_KEY: z.string().optional(),
   
   // Payment
-  PAYMENT_API_BASE: z.string().url().optional(),
+  PAYMENT_API_BASE: z.string().url().optional().or(z.literal('')),
   PAYMENT_API_KEY: z.string().optional(),
   PAYMENT_WEBHOOK_SECRET: z.string().optional(),
   

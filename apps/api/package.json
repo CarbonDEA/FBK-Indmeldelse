@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build": "nest build",
-    "dev": "nest start --watch",
-    "start": "node dist/main",
+    "dev": "tsx watch src/main.ts",
+    "start": "node dist/apps/api/src/main",
     "start:debug": "nest start --debug --watch",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "test": "vitest run",
@@ -44,6 +44,7 @@
     "@typescript-eslint/parser": "^8.16.0",
     "eslint": "^9.15.0",
     "supertest": "^7.0.0",
+    "tsx": "^4.19.2",
     "typescript": "^5.6.3",
     "vitest": "^2.1.5"
   }
