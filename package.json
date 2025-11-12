@@ -1,0 +1,22 @@
+{
+  "name": "fbk-indmeldelse",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Automated member management system for billiard club",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "clean": "turbo run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "turbo": "^2.2.3",
+    "typescript": "^5.6.3"
+  },
+  "packageManager": "pnpm@9.13.2",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}

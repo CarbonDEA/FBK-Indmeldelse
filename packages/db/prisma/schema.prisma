@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Member {
+  id                 String        @id @default(cuid())
+  memberNo           Int           @unique
+  name               String
+  email              String        @unique
+  phone              String?
+  status             MemberStatus  @default(ACTIVE)
+  joinedAt           DateTime      @default(now())
+  terminatedAt       DateTime?
+  dineroContactId    String?
+  paymentCustomerId  String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  accessKeys         AccessKey[]
+  payments           Payment[]
+
+  @@index([email])
+  @@index([memberNo])
+  @@index([status])
+}
+
+enum MemberStatus {
+  ACTIVE
+  PENDING
+  TERMINATED
+}
+
+model Application {
+  id           String              @id @default(cuid())
+  dataJson     Json
+  status       ApplicationStatus   @default(PENDING)
+  createdAt    DateTime            @default(now())
+  approvedBy   String?
+  approvedAt   DateTime?
+  rejectedAt   DateTime?
+  rejectedBy   String?
+  updatedAt    DateTime            @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model AccessKey {
+  id         String           @id @default(cuid())
+  memberId   String
+  unifiKey   String           // encrypted code
+  unifiKeyId String?          // Unifi's internal ID
+  status     AccessKeyStatus  @default(ACTIVE)
+  createdAt  DateTime         @default(now())
+  revokedAt  DateTime?
+  updatedAt  DateTime         @updatedAt
+
+  member     Member           @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([memberId])
+  @@index([status])
+}
+
+enum AccessKeyStatus {
+  ACTIVE
+  REVOKED
+}
+
+model Payment {
+  id           String    @id @default(cuid())
+  memberId     String
+  invoiceId    String?   // Dinero invoice GUID
+  periodStart  DateTime
+  periodEnd    DateTime
+  amount       Int       // in øre (cents)
+  paid         Boolean   @default(false)
+  paidAt       DateTime?
+  method       String?
+  externalRef  String?   // reference from payment provider
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  member       Member    @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([memberId])
+  @@index([paid])
+  @@index([externalRef])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actor     String   // email or "system"
+  action    String
+  entity    String
+  entityId  String
+  payload   Json?
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([createdAt])
+}
